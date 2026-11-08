@@ -13,7 +13,7 @@ export type Route =
   | { name: "shop"; category: CategoryId | "all" }
   | { name: "product"; id: string }
   | { name: "collections" }
-  | { name: "approach" }
+  | { name: "visit" }
   | { name: "wishlist" }
   | { name: "checkout" }
   | { name: "order" }
@@ -36,7 +36,7 @@ export function parseHash(raw: string): Route {
   }
   switch (hash) {
     case "collections":
-    case "approach":
+    case "visit":
     case "wishlist":
     case "checkout":
     case "policies":

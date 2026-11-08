@@ -1,6 +1,6 @@
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { d, gsap, useGSAP } from "../anim/gsap";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { d, Flip, gsap, ScrollTrigger } from "../anim/gsap";
 import { CATEGORIES, CATEGORY_BY_ID, PRODUCTS } from "../data/products";
 import type { CategoryId } from "../data/types";
 import { matchesPrice, matchesSearch, PRICE_BANDS, queryCatalogue, SORT_OPTIONS, type PriceBand, type SortKey } from "../lib/catalogue";
@@ -27,17 +27,43 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
   const results = useMemo(() => queryCatalogue(query), [query.query, query.category, query.price, query.sort]); // eslint-disable-line react-hooks/exhaustive-deps
   const resultKey = results.map((p) => p.id).join(",");
 
-  useGSAP(
-    () => {
-      if (firstRender.current) {
-        firstRender.current = false;
-        return;
-      }
-      const cards = gsap.utils.toArray<HTMLElement>(".card", gridRef.current).slice(0, 12);
+  // GSAP Flip: capture card positions before a filter/sort/search change, then
+  // animate each card from its old position to its new one after React re-renders.
+  const flipState = useRef<Flip.FlipState | null>(null);
+  const captureFlip = () => {
+    const cards = gridRef.current?.querySelectorAll(".card");
+    if (!cards || cards.length === 0) return;
+    gsap.killTweensOf(cards);
+    gsap.set(cards, { clearProps: "opacity,visibility,transform" });
+    flipState.current = Flip.getState(cards);
+  };
+  const update = (u: Parameters<typeof setShopQuery>[0]) => {
+    captureFlip();
+    setShopQuery(u);
+  };
+
+  useLayoutEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const state = flipState.current;
+    flipState.current = null;
+    const cards = gridRef.current?.querySelectorAll(".card");
+    if (!cards || cards.length === 0) return;
+    ScrollTrigger.refresh();
+    if (!state) {
       gsap.fromTo(cards, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: d(0.45), stagger: d(0.03), overwrite: true });
-    },
-    { dependencies: [resultKey], scope: gridRef },
-  );
+      return;
+    }
+    Flip.from(state, {
+      targets: cards,
+      duration: d(0.55),
+      ease: "power2.out",
+      scale: false,
+      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: d(0.45), stagger: 0.02, overwrite: true }),
+    });
+  }, [resultKey]);
 
   const categoryCounts = useMemo(() => {
     const base = PRODUCTS.filter((p) => matchesSearch(p, query.query) && matchesPrice(p, query.price));
@@ -47,12 +73,13 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
   }, [query.query, query.price]);
 
   const setCategory = (id: CategoryId | "all") => {
+    captureFlip();
     setPending(id);
     navigate(id === "all" ? "#shop" : `#shop-${id}`);
   };
   const hasFilters = query.query.trim() !== "" || category !== "all" || query.price !== "any";
   const clearAll = () => {
-    setShopQuery({ query: "", price: "any", sort: "featured" });
+    update({ query: "", price: "any", sort: "featured" });
     if (category !== "all") setCategory("all");
   };
   const cat = category === "all" ? null : CATEGORY_BY_ID.get(category);
@@ -109,7 +136,7 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
               <legend>Price</legend>
               {PRICE_BANDS.map((b) => (
                 <label key={b.id} className="radio-row">
-                  <input type="radio" name="price" value={b.id} checked={query.price === b.id} onChange={() => setShopQuery({ price: b.id as PriceBand })} data-testid={`filter-price-${b.id}`} />
+                  <input type="radio" name="price" value={b.id} checked={query.price === b.id} onChange={() => update({ price: b.id as PriceBand })} data-testid={`filter-price-${b.id}`} />
                   <span>{b.label}</span>
                 </label>
               ))}
@@ -135,11 +162,11 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
                 type="search"
                 placeholder="Search products"
                 value={query.query}
-                onChange={(e) => setShopQuery({ query: e.target.value.slice(0, 80) })}
+                onChange={(e) => update({ query: e.target.value.slice(0, 80) })}
                 data-testid="shop-search"
               />
               {query.query && (
-                <button type="button" className="icon-btn" style={{ width: 36, height: 36 }} aria-label="Clear search" onClick={() => setShopQuery({ query: "" })}>
+                <button type="button" className="icon-btn" style={{ width: 36, height: 36 }} aria-label="Clear search" onClick={() => update({ query: "" })}>
                   <X size={16} aria-hidden="true" />
                 </button>
               )}
@@ -148,7 +175,7 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
               <label htmlFor="sort" className="muted">
                 Sort
               </label>
-              <select id="sort" className="select" value={query.sort} onChange={(e) => setShopQuery({ sort: e.target.value as SortKey })} data-testid="sort">
+              <select id="sort" className="select" value={query.sort} onChange={(e) => update({ sort: e.target.value as SortKey })} data-testid="sort">
                 {SORT_OPTIONS.map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.label}
@@ -165,7 +192,7 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
           {hasFilters && (
             <div className="active-filters">
               {query.query.trim() && (
-                <button type="button" className="chip is-active" onClick={() => setShopQuery({ query: "" })}>
+                <button type="button" className="chip is-active" onClick={() => update({ query: "" })}>
                   “{query.query.trim()}” <X size={14} aria-hidden="true" />
                   <span className="visually-hidden">Remove search filter</span>
                 </button>
@@ -177,7 +204,7 @@ export function Shop({ category: routeCategory }: { category: CategoryId | "all"
                 </button>
               )}
               {query.price !== "any" && (
-                <button type="button" className="chip is-active" onClick={() => setShopQuery({ price: "any" })}>
+                <button type="button" className="chip is-active" onClick={() => update({ price: "any" })}>
                   {PRICE_BANDS.find((b) => b.id === query.price)?.label} <X size={14} aria-hidden="true" />
                   <span className="visually-hidden">Remove price filter</span>
                 </button>

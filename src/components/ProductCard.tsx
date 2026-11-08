@@ -1,6 +1,7 @@
 import { Heart, Plus } from "lucide-react";
 import { useRef } from "react";
 import { d, gsap } from "../anim/gsap";
+import { flyToCart } from "../anim/flyToCart";
 import { CATEGORY_BY_ID, defaultVariant, hasPriceRange, lowestPrice, variantLabel } from "../data/products";
 import type { Product } from "../data/types";
 import { formatRM } from "../lib/money";
@@ -24,12 +25,13 @@ export function ProductCard({ product, headingLevel = 3 }: { product: Product; h
     if (!def) return;
     const ok = feedback(def.sku, 1, product, def);
     if (ok && quickRef.current) {
+      flyToCart(quickRef.current);
       gsap.fromTo(quickRef.current, { scale: 0.86 }, { scale: 1, duration: d(0.5), ease: "back.out(3)" });
     }
   };
 
   return (
-    <article className="card" data-reveal data-testid="product-card" data-product-id={product.id}>
+    <article className="card" data-reveal data-testid="product-card" data-product-id={product.id} data-flip-id={product.id}>
       <div className="card__media">
         <a href={link} tabIndex={-1} aria-hidden="true">
           <ArtFrame art={product.art} title={`Illustration: ${product.name}`} decorative />

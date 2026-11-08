@@ -49,7 +49,7 @@ export function Policies() {
   const sections = [
     {
       title: "Delivery policy",
-      body: "Placeholder. The concept uses illustrative delivery fees by zone (Klang Valley, Peninsular Malaysia, Sabah, Sarawak and Labuan) and a free-delivery threshold. These are not the shop's terms. A real policy must come from the business.",
+      body: "Placeholder. This demo uses illustrative delivery fees by zone (Klang Valley, Peninsular Malaysia, Sabah, Sarawak and Labuan) and a free-delivery threshold. These are not the shop's terms. A real policy must come from the business.",
     },
     {
       title: "Store pickup",
@@ -61,7 +61,7 @@ export function Policies() {
     },
     {
       title: "Privacy notice",
-      body: "Placeholder. This prototype sends nothing to any server. Cart and wishlist may be stored in your browser's local storage. Checkout details stay in memory and are discarded. A live site would need a PDPA-compliant privacy notice written with the business.",
+      body: "Placeholder. This demo sends nothing to any server. Cart and wishlist may be stored in your browser's local storage. Checkout details stay in memory and are discarded. A live site would need a PDPA-compliant privacy notice written with the business.",
     },
   ];
   return (
@@ -94,7 +94,7 @@ export function NotFound() {
     <div className="container section">
       <div className="empty-state">
         <h1 id="page-title" tabIndex={-1} style={{ fontSize: "var(--fs-xl)" }}>
-          This page isn't part of the concept
+          This page doesn't exist
         </h1>
         <p>The link may be mistyped, or the product may not exist in the demo catalogue.</p>
         <div className="row" style={{ justifyContent: "center" }}>

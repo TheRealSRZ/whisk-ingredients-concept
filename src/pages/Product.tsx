@@ -1,7 +1,9 @@
 import { Check, Heart, ShoppingBag } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { d, gsap, useGSAP } from "../anim/gsap";
+import { flyToCart } from "../anim/flyToCart";
 import { useReveal } from "../anim/useReveal";
+import { useFrames } from "../anim/useFrames";
 import { CATEGORY_BY_ID, defaultVariant, findVariant, PRODUCT_BY_ID, variantLabel } from "../data/products";
 import type { Product as ProductT } from "../data/types";
 import { maxQtyFor, qtyInCart } from "../lib/cart";
@@ -19,6 +21,7 @@ export function Product({ id }: { id: string }) {
   const product = PRODUCT_BY_ID.get(id)!;
   const root = useRef<HTMLDivElement>(null);
   useReveal(root, [id]);
+  useFrames(root, [id]);
   const cat = CATEGORY_BY_ID.get(product.category)!;
   const related = product.related.map((r) => PRODUCT_BY_ID.get(r)).filter((p): p is ProductT => Boolean(p));
 
@@ -55,8 +58,10 @@ export function Product({ id }: { id: string }) {
             <p>{product.description}</p>
             <p className="usage">{product.usage}</p>
           </div>
-          <div data-reveal>
-            <ArtFrame art={product.art} view={2} title={`Illustration: ${product.name} styled as a still life`} />
+          <div className="frame frame--arch" data-frame="arch">
+            <div className="frame__inner" data-frame-inner>
+              <ArtFrame art={product.art} view={2} title={`Illustration: ${product.name} styled as a still life`} />
+            </div>
           </div>
         </div>
       </section>
@@ -199,6 +204,7 @@ function BuyBox({ product }: { product: ProductT }) {
       setQty(1);
       window.setTimeout(() => setJustAdded(false), 1800);
       const btn = boxRef.current?.querySelector(".add-btn");
+      flyToCart(btn ?? null);
       if (btn) gsap.fromTo(btn, { scale: 0.96 }, { scale: 1, duration: d(0.5), ease: "back.out(3)" });
     }
   };

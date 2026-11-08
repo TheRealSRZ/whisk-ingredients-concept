@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Flip } from "gsap/Flip";
 import { useGSAP } from "@gsap/react";
 
 /*
@@ -8,7 +9,7 @@ import { useGSAP } from "@gsap/react";
  * The shop never depends on an animation finishing: every control works while
  * tweens run, and content is readable without JavaScript animation.
  */
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
 gsap.defaults({ ease: "power3.out", duration: 0.8 });
 
 export const MOTION_OK = "(prefers-reduced-motion: no-preference)";
@@ -24,4 +25,12 @@ export function d(seconds: number): number {
   return prefersReducedMotion() ? 0 : seconds;
 }
 
-export { gsap, ScrollTrigger, useGSAP };
+/** Prepares stroke paths so they can "draw on" by tweening strokeDashoffset to 0. */
+export function primeDraw(paths: SVGPathElement[] | Element[]): void {
+  paths.forEach((p) => {
+    const len = (p as SVGPathElement).getTotalLength?.() ?? 0;
+    gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+  });
+}
+
+export { Flip, gsap, ScrollTrigger, useGSAP };

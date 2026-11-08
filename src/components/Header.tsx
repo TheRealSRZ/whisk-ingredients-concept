@@ -15,7 +15,7 @@ const NAV: { label: string; to: string; match: Route["name"][] }[] = [
   { label: "Home", to: "#home", match: ["home"] },
   { label: "Shop", to: "#shop", match: ["shop", "product"] },
   { label: "Collections", to: "#collections", match: ["collections"] },
-  { label: "Our Approach", to: "#approach", match: ["approach"] },
+  { label: "Visit", to: "#visit", match: ["visit"] },
 ];
 
 function useScrolled(threshold = 40) {
@@ -65,7 +65,7 @@ export function Header({ route }: { route: Route }) {
   useGSAP(
     () => {
       if (cartBump === 0 || !badgeRef.current) return;
-      gsap.fromTo(badgeRef.current, { scale: 1.7 }, { scale: 1, duration: d(0.6), ease: "back.out(3)" });
+      gsap.fromTo(badgeRef.current, { scale: 1.7 }, { scale: 1, duration: d(0.7), ease: "elastic.out(1, 0.4)" });
     },
     { dependencies: [cartBump], scope: headerRef },
   );
@@ -76,7 +76,6 @@ export function Header({ route }: { route: Route }) {
     <header ref={headerRef} className={`site-header ${overlay ? "is-overlay" : ""}`}>
       <div className="demo-notice" data-testid="demo-notice">
         <span>{DEMO_NOTICE}</span>
-        <a href="#approach">About this concept</a>
       </div>
       <div className="header-bar">
         <div className="container header-inner">
@@ -117,7 +116,7 @@ export function Header({ route }: { route: Route }) {
                 </span>
               )}
             </a>
-            <button type="button" className="icon-btn" onClick={openCart} aria-label={`Cart, ${count} ${count === 1 ? "item" : "items"}`} data-testid="open-cart">
+            <button type="button" className="icon-btn" id="cart-button" onClick={openCart} aria-label={`Cart, ${count} ${count === 1 ? "item" : "items"}`} data-testid="open-cart">
               <ShoppingBag size={20} aria-hidden="true" />
               {count > 0 && (
                 <span ref={badgeRef} className="count-badge" data-testid="cart-count" aria-hidden="true">
@@ -163,7 +162,7 @@ function MobileMenu({ open, onClose, route, wishlistCount }: { open: boolean; on
           </ul>
         </nav>
         <div className="mobile-menu__meta" data-stagger>
-          <span className="demo-tag">Concept · Demo</span>
+          <span className="demo-tag">Demo store</span>
           <span>{STORE_FACTS.name}</span>
           <span>Tel {STORE_FACTS.phoneDisplay}</span>
         </div>

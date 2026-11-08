@@ -6,7 +6,7 @@ import { Header } from "./components/Header";
 import { Toasts } from "./components/Toasts";
 import { PRODUCT_BY_ID } from "./data/products";
 import { CATEGORY_BY_ID } from "./data/products";
-import { Approach } from "./pages/Approach";
+import { Visit } from "./pages/Visit";
 import { Checkout } from "./pages/Checkout";
 import { Collections } from "./pages/Collections";
 import { Confirmation } from "./pages/Confirmation";
@@ -28,8 +28,8 @@ function titleFor(route: Route): string {
       return `${PRODUCT_BY_ID.get(route.id)?.name} · ${base}`;
     case "collections":
       return `Collections · ${base}`;
-    case "approach":
-      return `Our approach · ${base}`;
+    case "visit":
+      return `Visit the shop · ${base}`;
     case "wishlist":
       return `Wishlist · ${base}`;
     case "checkout":
@@ -59,8 +59,8 @@ function Page({ route }: { route: Route }) {
       return <Product id={route.id} />;
     case "collections":
       return <Collections />;
-    case "approach":
-      return <Approach />;
+    case "visit":
+      return <Visit />;
     case "wishlist":
       return <Wishlist />;
     case "checkout":

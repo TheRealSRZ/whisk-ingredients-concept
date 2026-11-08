@@ -53,7 +53,7 @@ export function CartDrawer() {
               {lines.map((line) => {
                 const max = maxQtyFor(line.sku);
                 return (
-                  <li key={line.sku} className="cart-line" data-testid="cart-line" data-sku={line.sku} style={{ opacity: removing === line.sku ? 0.4 : 1 }}>
+                  <li key={line.sku} className="cart-line" data-stagger data-testid="cart-line" data-sku={line.sku} style={{ opacity: removing === line.sku ? 0.4 : 1 }}>
                     <a className="cart-line__art" href={href({ name: "product", id: line.product.id })} onClick={closeCart} tabIndex={-1} aria-hidden="true">
                       <ArtFrame art={line.product.art} title="" decorative />
                     </a>

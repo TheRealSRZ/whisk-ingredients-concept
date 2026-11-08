@@ -1,6 +1,6 @@
 # Business Evidence Register
 
-Prepared 7 November 2026 for the unofficial Whisk Ingredients concept prototype.
+Prepared 7 November 2026, updated 8 November 2026 for the unofficial Whisk Ingredients concept prototype.
 
 ## A. From the research spreadsheet (`Taman_Melawati_Businesses.xlsx`)
 
@@ -33,9 +33,13 @@ Source URLs:
 - https://emis.cn/php/company-profile/MY/Whisk_Ingredients_Sdn_Bhd_en_16437251.html
 - https://wanderlog.com/place/details/10838954/whisk-ingredients--seksyen-20
 
+Additional sources (8 Nov 2026):
+- https://en.wikipedia.org/wiki/Taman_Melawati
+- https://starproperty.my/news/melawati-shopping-mall-opens-to-public/92250
+
 ## C. Unverified, conflicting or not found
 
-- The unit number differs between sources ("268–269" vs "268, G"), so the site shows only "Jalan Bandar 12, Taman Melawati, 53100 Kuala Lumpur".
+- Waze gives "268–269 Jalan Bandar 12"; CariCari gives "268, G" (ground floor). The site shows "268–269, Jalan Bandar 12, Taman Melawati, 53100 Kuala Lumpur".
 - **Decorating supplies, tools and packaging ranges were not confirmed by any source found.** The five collections are a design assumption.
 - No official website, online shop, Instagram, Shopee or Lazada store was confirmed. whisk.com.my is inferred from the Facebook handle only.
 - Payment methods, delivery, pickup and online ordering: nothing found. Waze lists "accepts credit cards" (crowd-sourced, unconfirmed).
@@ -45,13 +49,16 @@ Source URLs:
 
 | Element | Status |
 |---|---|
-| Business name, phone, street/area/postcode | From sources (shown with "please confirm" note) |
-| Opening hours | Shown as "listed hours (unconfirmed)" |
+| Business name, phone, full address | From sources (shown with "please confirm" note) |
+| Google Maps links | Official Maps URLs (search + directions) built from the listed name and address; they resolve to the Google listing |
+| Amenities (credit cards, air-conditioned) | From Waze listing, crowd-sourced |
+| Transport and area notes (MRR2, Sri Rampai LRT feeder bus, Melawati Mall, MPAJ) | Wikipedia and The Star |
+| Opening hours and live open/closed status | Waze hours, evaluated in Malaysia time; labelled crowd-sourced |
 | Category structure (5 collections) | Design assumption |
 | 26 products, 69 variants, prices, stock | Fictional demo data |
 | Delivery fees, free-delivery threshold, pickup | Fictional demo data |
 | `BAKE10` promo code | Fictional demo data |
-| Payment methods (demo banking / e-wallet / card) | Fictional; no real provider |
+| Payment methods (demo banking / card) | Fictional; no real provider |
 | Wordmark "Whisk · Ingredients · Concept" and all imagery | Original to this concept; no official logo or photos used |
 | Policies (delivery, returns, privacy) | Labelled placeholders |
 

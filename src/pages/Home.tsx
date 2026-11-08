@@ -1,6 +1,8 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { DESKTOP_MOTION, gsap, MOTION_OK, useGSAP } from "../anim/gsap";
+import { DESKTOP_MOTION, gsap, MOTION_OK, primeDraw, useGSAP } from "../anim/gsap";
+import { useFrames } from "../anim/useFrames";
+import { WheatLine, WhiskLine } from "../components/LineArt";
 import { useReveal } from "../anim/useReveal";
 import { STORE_FACTS } from "../data/config";
 import { CATEGORIES, PRODUCT_BY_ID, PRODUCTS, productsInCategory } from "../data/products";
@@ -14,6 +16,7 @@ import { prefersReducedMotion } from "../anim/gsap";
 export function Home() {
   const root = useRef<HTMLDivElement>(null);
   useReveal(root);
+  useFrames(root);
   return (
     <div ref={root}>
       <Hero />
@@ -33,9 +36,14 @@ function Hero() {
     () => {
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
+        const lines = gsap.utils.toArray<SVGPathElement>(".hero .line-art .draw");
+        primeDraw(lines);
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        tl.from(".h-glow", { autoAlpha: 0, scale: 0.8, transformOrigin: "50% 50%", duration: 1.6 }, 0)
-          .from(".hero h1 .line > span", { yPercent: 110, duration: 1.1, stagger: 0.09 }, 0.15)
+        tl.from(".hero__art", { clipPath: "inset(100% 0% 0% 0% round 999px 999px 28px 28px)", duration: 1.5, ease: "expo.inOut" }, 0.1)
+          .to(lines, { strokeDashoffset: 0, duration: 2.6, stagger: 0.05, ease: "power2.inOut" }, 0.2)
+          .from(".h-glow", { autoAlpha: 0, scale: 0.8, transformOrigin: "50% 50%", duration: 1.6 }, 0)
+          .from(".hero h1 .line > span", { yPercent: 110, duration: 1.2, stagger: 0.12, ease: "expo.out" }, 0.15)
+          .from(".hero__script", { autoAlpha: 0, x: -24, duration: 1 }, 0.75)
           .from(".hero .eyebrow", { autoAlpha: 0, y: 12, duration: 0.6 }, 0.1)
           .from(".h-slab", { y: 60, autoAlpha: 0, duration: 1.2 }, 0.25)
           .from(".h-shard", { y: -80, rotation: (i) => (i % 2 ? 24 : -24), autoAlpha: 0, transformOrigin: "50% 50%", stagger: 0.1, duration: 1.1 }, 0.45)
@@ -44,9 +52,16 @@ function Hero() {
           .from(".h-dust", { autoAlpha: 0, scaleX: 0.6, transformOrigin: "50% 50%", duration: 1.4 }, 0.5)
           .from(".hero__lede, .hero__ctas, .hero__note", { autoAlpha: 0, y: 18, stagger: 0.1, duration: 0.8 }, 0.7);
 
+        // Line art drifts on scroll, like leaves past a window.
+        gsap.to(".hero__line-art--a", {
+          yPercent: -30,
+          rotation: -8,
+          ease: "none",
+          scrollTrigger: { trigger: ref.current, start: "top top", end: "bottom top", scrub: true },
+        });
         // Scroll parallax: art drifts slower than the page.
-        gsap.to(".hero__art", {
-          yPercent: 12,
+        gsap.to(".hero__art svg", {
+          yPercent: -6,
           ease: "none",
           scrollTrigger: { trigger: ref.current, start: "top top", end: "bottom top", scrub: 0.6 },
         });
@@ -83,9 +98,11 @@ function Hero() {
 
   return (
     <section ref={ref} className="hero" aria-labelledby="page-title" data-testid="hero">
+      <WhiskLine className="hero__line-art hero__line-art--a" />
+      <WheatLine className="hero__line-art hero__line-art--b" />
       <div className="container hero__inner">
         <div className="hero__copy">
-          <p className="eyebrow">Taman Melawati · Concept storefront</p>
+          <p className="eyebrow">Taman Melawati · Baking ingredients &amp; supplies</p>
           <h1 id="page-title" tabIndex={-1}>
             <span className="line">
               <span>Every exceptional</span>
@@ -97,6 +114,9 @@ function Hero() {
               <span>with an ingredient.</span>
             </span>
           </h1>
+          <p className="hero__script" aria-hidden="true">
+            Bake something beautiful.
+          </p>
           <p className="hero__lede">
             Couverture that tempers to a mirror shine. Flour milled for a feather-light crumb. Tools that steady the final flourish. A
             reimagined way to shop for baking, organised around how bakers actually work.
@@ -111,9 +131,9 @@ function Hero() {
           </div>
           <p className="hero__note">Illustrated products · Demonstration catalogue and prices</p>
         </div>
-        <div className="hero__art">
+        <figure className="hero__art">
           <HeroArt />
-        </div>
+        </figure>
       </div>
     </section>
   );
@@ -121,13 +141,16 @@ function Hero() {
 
 function Intro() {
   const flour = PRODUCT_BY_ID.get("superfine-cake-flour")!;
-  const whisk = PRODUCT_BY_ID.get("balloon-whisk")!;
   return (
     <section className="section" aria-labelledby="intro-title">
       <div className="container intro">
-        <div className="intro__art" data-reveal>
-          <ArtFrame art={flour.art} title="Illustration: a paper bag of cake flour on a sand-coloured plate" view={2} />
-          <ArtFrame art={whisk.art} title="Illustration: a stainless balloon whisk" className="art--offset" decorative />
+        <div className="intro__art">
+          <div className="frame frame--arch" data-frame="arch">
+            <div className="frame__inner" data-frame-inner>
+              <ArtFrame art={flour.art} title="Illustration: a paper bag of cake flour on a sand-coloured plate" view={2} />
+            </div>
+          </div>
+          <WhiskLine className="intro__line-art" scrollDraw />
         </div>
         <div data-reveal>
           <p className="eyebrow">A better way to stock your kitchen</p>
@@ -136,7 +159,7 @@ function Intro() {
           </h2>
           <p className="lede">
             A great baking shop already holds the answers: which flour for chiffon, which couverture tempers cleanly, which board fits a
-            20 cm cake. This concept brings that knowledge online with clear sizes, honest stock levels and calm, beautiful browsing.
+            20 cm cake. This storefront brings that knowledge online with clear sizes, honest stock levels and calm, beautiful browsing.
           </p>
           <ol className="pillars">
             <li>
@@ -149,7 +172,7 @@ function Intro() {
             </li>
             <li>
               <h3>Collect locally</h3>
-              <p>A concept for reserving online and collecting in Taman Melawati.</p>
+              <p>Reserve online and collect from the shop in Taman Melawati.</p>
             </li>
           </ol>
         </div>
@@ -356,18 +379,17 @@ function LocalBand() {
     <section className="section band--cream" aria-labelledby="local-title">
       <div className="container local-band">
         <div data-reveal>
-          <span className="eyebrow">Concept feature</span>
+          <span className="eyebrow">Click &amp; collect</span>
           <h2 id="local-title">Reserve online. Collect in Taman Melawati.</h2>
           <p className="lede">
-            In this concept, bakers check stock, reserve and pay online, then pick up at the shop. Here pickup and payment are simulated; a
-            real service would follow the business's own process.
+            Check stock, reserve and pay online, then pick up at the shop. In this demo, pickup and payment are simulated.
           </p>
           <div className="row" style={{ marginTop: 24 }}>
             <a className="btn" href="#shop">
               Try the demo checkout
             </a>
-            <a className="text-link" href="#approach">
-              What's real, what's demo <ArrowRight size={14} aria-hidden="true" />
+            <a className="text-link" href="#visit">
+              Plan your visit <ArrowRight size={14} aria-hidden="true" />
             </a>
           </div>
         </div>
@@ -379,7 +401,7 @@ function LocalBand() {
             </div>
             <div>
               <dt>Address</dt>
-              <dd>{STORE_FACTS.addressLines.join(", ")}</dd>
+              <dd>{STORE_FACTS.addressShort}</dd>
             </div>
             <div>
               <dt>Telephone</dt>
@@ -390,7 +412,10 @@ function LocalBand() {
               <dd>{STORE_FACTS.hoursNote}</dd>
             </div>
           </dl>
-          <p className="source-note">Sources: research spreadsheet and public map / directory listings. Not confirmed by the business.</p>
+          <a className="btn btn--ghost btn--sm" href={STORE_FACTS.maps.search} target="_blank" rel="noopener noreferrer" style={{ justifySelf: "start" }}>
+            <MapPin size={14} aria-hidden="true" /> Open in Google Maps
+          </a>
+          <p className="source-note">From public map and directory listings. Not confirmed by the business.</p>
         </div>
       </div>
     </section>

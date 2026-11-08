@@ -12,18 +12,22 @@ export function Footer() {
               <span className="wordmark__main">Whisk</span>
               <span className="wordmark__sub">Ingredients · Concept</span>
             </span>
+            <p className="footer-script" aria-hidden="true">
+              Bake something beautiful.
+            </p>
             <p>
               An unofficial design proposal showing how a premium online storefront could work for {STORE_FACTS.name}. It is not
               affiliated with or endorsed by the business. Catalogue, prices, stock and policies are demonstration data.
             </p>
             <div className="footer-contact" style={{ marginTop: 24 }}>
               <strong>Visit the shop</strong>
-              <span>{STORE_FACTS.addressLines.join(", ")}</span>
-              <span>
-                Tel: {STORE_FACTS.phoneDisplay}
-              </span>
+              <span>{STORE_FACTS.addressShort}</span>
+              <span>Tel: {STORE_FACTS.phoneDisplay}</span>
               <span>{STORE_FACTS.hoursNote}</span>
-              <span className="xs">Contact details come from the research spreadsheet and public listings. Please confirm with the store.</span>
+              <a href={STORE_FACTS.maps.search} target="_blank" rel="noopener noreferrer" className="footer-maplink" data-testid="footer-maps-link">
+                Find the shop on Google Maps ↗
+              </a>
+              <span className="xs">Details from public listings. Please confirm with the store before visiting.</span>
             </div>
           </div>
           <div>
@@ -54,7 +58,7 @@ export function Footer() {
             <h2>Concept</h2>
             <ul>
               <li>
-                <a href="#approach">Our approach</a>
+                <a href="#visit">Visit the shop</a>
               </li>
               <li>
                 <a href="#policies">Delivery policy (placeholder)</a>

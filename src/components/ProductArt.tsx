@@ -105,7 +105,7 @@ function Label({ x, y, w, h, art, dark = false }: { x: number; y: number; w: num
       <rect x={x} y={y} width={w} height={h} fill={paper} opacity={dark ? 0.9 : 0.96} />
       <rect x={x + 6} y={y + 6} width={w - 12} height={h - 12} fill="none" stroke={art.accent} strokeWidth="0.8" opacity="0.7" />
       <text x={x + w / 2} y={y + 24} textAnchor="middle" fontFamily="Inter Variable, Inter, sans-serif" fontSize={w < 116 ? 6.2 : 7.5} fontWeight="600" letterSpacing={w < 116 ? 1.4 : 2.6} fill={ink} opacity="0.75">
-        WHISK · CONCEPT
+        FINE BAKING
       </text>
       <text x={x + w / 2} y={y + h / 2 + fs / 3 + 4} textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize={fs} fontWeight="600" fill={ink} letterSpacing="1">
         {art.label}
@@ -162,7 +162,7 @@ function Shape({ shape, art, ids }: { shape: ArtShape; art: ArtSpec; ids: Ids })
           <ellipse cx="200" cy="196" rx="70" ry="14" fill={tint(a, 0.15)} />
           <ellipse cx="200" cy="196" rx="58" ry="10" fill="none" stroke={shade(a, 0.15)} strokeWidth="1" />
           <rect x="134" y="262" width="132" height="96" fill={isDark(b) ? shade(b, 0.2) : "#FBF7F0"} opacity="0.92" />
-          <text x="200" y="285" textAnchor="middle" fontFamily="Inter Variable, Inter, sans-serif" fontSize="7" fontWeight="600" letterSpacing="3" fill={isDark(b) ? a : "#2a201c"}>WHISK · CONCEPT</text>
+          <text x="200" y="285" textAnchor="middle" fontFamily="Inter Variable, Inter, sans-serif" fontSize="7" fontWeight="600" letterSpacing="3" fill={isDark(b) ? a : "#2a201c"}>FINE BAKING</text>
           <text x="200" y="324" textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize={Math.min(28, 190 / Math.max(4, art.label.length))} fontWeight="600" fill={isDark(b) ? a : "#2a201c"} letterSpacing="1">
             {art.label}
           </text>
@@ -222,7 +222,7 @@ function Shape({ shape, art, ids }: { shape: ArtShape; art: ArtSpec; ids: Ids })
             <line key={i} x1={184 + i * 5.5} x2={184 + i * 5.5} y1="150" y2="188" stroke="#000" strokeOpacity="0.25" />
           ))}
           <rect x="164" y="282" width="72" height="92" fill="#FBF7F0" opacity="0.95" />
-          <text x="200" y="300" textAnchor="middle" fontFamily="Inter Variable, Inter, sans-serif" fontSize="5.5" fontWeight="600" letterSpacing="2" fill="#2a201c">WHISK · CONCEPT</text>
+          <text x="200" y="300" textAnchor="middle" fontFamily="Inter Variable, Inter, sans-serif" fontSize="5.5" fontWeight="600" letterSpacing="2" fill="#2a201c">FINE BAKING</text>
           <text x="200" y="333" textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize={Math.min(20, 110 / Math.max(3, art.label.length))} fontWeight="600" fill="#2a201c">
             {art.label}
           </text>
@@ -327,7 +327,7 @@ function Shape({ shape, art, ids }: { shape: ArtShape; art: ArtSpec; ids: Ids })
           <path d="M210 300 L240 292 L222 384 L206 388 Z" fill="#fff" opacity="0.35" />
           <path d="M110 230 L180 270 L310 238" fill="none" stroke={shade(b, 0.3)} strokeWidth="1" />
           <text x="246" y="408" textAnchor="middle" transform="rotate(-13.5 246 408)" fontFamily="Cormorant Garamond, serif" fontStyle="italic" fontSize="15" fill={shade(b, 0.55)}>
-            Whisk
+            Patisserie
           </text>
         </g>
       );

@@ -131,7 +131,7 @@ test.describe("Journey C — multi-item order with BAKE10 and pickup", () => {
     await page.getByTestId("step-next").click();
 
     await expect(page.getByTestId("step-3")).toBeVisible();
-    await page.getByTestId("pay-demo-ewallet").check();
+    await page.getByTestId("pay-demo-banking").check();
     await page.getByTestId("ack").check();
     await page.getByTestId("step-next").click();
 
@@ -461,7 +461,7 @@ test.describe("Keyboard, motion and environment", () => {
     test(`no horizontal overflow at ${width}px on key pages`, async ({ browser }) => {
       const ctx = await browser.newContext({ viewport: { width, height: 900 } });
       const page = await ctx.newPage();
-      for (const hash of ["", "#shop", "#product-sprinkle-medley", "#collections", "#approach", "#wishlist", "#policies"]) {
+      for (const hash of ["", "#shop", "#product-sprinkle-medley", "#collections", "#visit", "#wishlist", "#policies"]) {
         await page.goto(`/${hash}`);
         await page.waitForTimeout(250);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -482,7 +482,7 @@ test.describe("Keyboard, motion and environment", () => {
     page.on("pageerror", (e) => errors.push(String(e)));
     await fresh(page);
     await quickAdd(page, "superfine-cake-flour");
-    for (const hash of ["#home", "#collections", "#approach", "#product-vanilla-bean-paste", "#checkout"]) {
+    for (const hash of ["#home", "#collections", "#visit", "#product-vanilla-bean-paste", "#checkout"]) {
       await page.goto(`/${hash}`);
       await page.waitForTimeout(200);
     }
@@ -498,9 +498,37 @@ test.describe("Keyboard, motion and environment", () => {
     expect(errors).toEqual([]);
   });
 
+  test("visit page shows location, hours and official Google Maps links; Approach page is gone", async ({ page }) => {
+    await page.goto("/#visit");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Find us in Taman Melawati.");
+    await expect(page.getByTestId("visit-address")).toContainText("268–269, Jalan Bandar 12");
+    await expect(page.getByTestId("visit-address")).toContainText("53100 Kuala Lumpur");
+    await expect(page.getByTestId("open-status")).toHaveText(/Open now|Closed/);
+    await expect(page.getByTestId("hours")).toContainText("Monday – Saturday");
+    const maps = page.getByTestId("maps-link");
+    await expect(maps).toHaveAttribute("href", /^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=Whisk%20Ingredients/);
+    await expect(maps).toHaveAttribute("target", "_blank");
+    await expect(page.getByTestId("directions-link")).toHaveAttribute("href", /^https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=/);
+    await expect(page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Visit" })).toHaveAttribute("aria-current", "page");
+    await expect(page.getByRole("link", { name: /Our Approach/i })).toHaveCount(0);
+    await page.goto("/#approach");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("doesn't exist");
+  });
+
+  test("'concept' and 'prototype' appear only in the header and footer", async ({ page }) => {
+    await fresh(page);
+    await quickAdd(page, "superfine-cake-flour");
+    for (const hash of ["#home", "#shop", "#product-sprinkle-medley", "#collections", "#visit", "#wishlist", "#checkout", "#policies", "#nope"]) {
+      await page.goto(`/${hash}`);
+      await page.waitForTimeout(150);
+      const text = await page.locator("main").innerText();
+      expect(text, hash).not.toMatch(/concept|prototype/i);
+    }
+  });
+
   test("unknown routes show a recoverable not-found page", async ({ page }) => {
     await page.goto("/#product-does-not-exist");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("isn't part of the concept");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("doesn't exist");
     await page.getByRole("link", { name: "Go to the shop" }).click();
     await expect(page).toHaveURL(/#shop$/);
   });

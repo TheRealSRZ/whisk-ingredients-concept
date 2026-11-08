@@ -108,8 +108,8 @@ export function Confirmation() {
           <a className="btn" href="#shop" data-testid="return-to-shop">
             Return to shop
           </a>
-          <a className="btn btn--ghost" href="#approach">
-            About this concept
+          <a className="btn btn--ghost" href="#visit">
+            Visit the shop
           </a>
         </div>
       </div>

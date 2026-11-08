@@ -64,7 +64,7 @@ export function Overlay({ open, onClose, side, labelledBy, initialFocus, classNa
         tl.current = gsap
           .timeline({ defaults: { ease: "power3.out" } })
           .fromTo(backdrop.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: d(0.35) }, 0)
-          .fromTo(panel.current, hidden, { xPercent: 0, yPercent: 0, duration: d(0.55) }, 0)
+          .fromTo(panel.current, hidden, { xPercent: 0, yPercent: 0, duration: d(0.6), ease: "expo.out" }, 0)
           .from(panel.current.querySelectorAll("[data-stagger]"), { y: 16, autoAlpha: 0, stagger: 0.05, duration: d(0.4) }, d(0.18));
       } else {
         tl.current = gsap

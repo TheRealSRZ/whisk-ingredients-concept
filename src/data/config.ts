@@ -9,22 +9,66 @@
  * payment methods are illustrative and are NOT the business's real terms.
  */
 
+const MAPS_QUERY = "Whisk Ingredients @ Taman Melawati, 268 Jalan Bandar 12, Taman Melawati, 53100 Kuala Lumpur";
+
 export const STORE_FACTS = {
   name: "Whisk Ingredients @ Taman Melawati",
-  /** Source: spreadsheet. Also matches public map/directory listings. */
+  /** Source: spreadsheet; matches Waze and CariCari listings. */
   phoneDisplay: "03-4162 3300",
   phoneE164: "+60341623300",
-  /** Source: public listings (Waze / directory). Unit number differs between sources, so it is omitted. */
-  addressLines: ["Jalan Bandar 12, Taman Melawati", "53100 Kuala Lumpur"],
-  /** Crowd-sourced listing. Unconfirmed. */
-  hoursNote: "Listed hours (unconfirmed): Mon–Sat 9am–7pm, Sun 9am–5pm",
+  /** Source: Waze ("268-269 Jalan Bandar 12") and CariCari ("268, G, Jalan Bandar 12, Taman Melawati 53100"). */
+  addressLines: ["268–269, Jalan Bandar 12", "Taman Melawati, 53100 Kuala Lumpur"],
+  addressShort: "268–269, Jalan Bandar 12, Taman Melawati, 53100 Kuala Lumpur",
+  /** Source: Waze listing (crowd-sourced). Day 0 = Sunday. Times are 24h, Malaysia time. */
+  hours: [
+    { days: "Monday – Saturday", open: "09:00", close: "19:00", dayIdx: [1, 2, 3, 4, 5, 6] },
+    { days: "Sunday", open: "09:00", close: "17:00", dayIdx: [0] },
+  ],
+  hoursNote: "Mon–Sat 9am–7pm · Sun 9am–5pm (per public listing)",
+  /** Source: Waze listing (crowd-sourced). */
+  amenities: ["Credit cards accepted", "Air-conditioned"],
   category: "Shops (per research spreadsheet)",
+  /**
+   * Official Google Maps URLs (Maps URLs API, https://developers.google.com/maps/documentation/urls).
+   * They open the Google Maps app on phones and maps.google.com on desktop and resolve to the shop's listing.
+   */
+  maps: {
+    search: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAPS_QUERY)}`,
+    directions: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(MAPS_QUERY)}`,
+    waze: "https://www.waze.com/live-map/directions/whisk-ingredients-@-taman-melawati-jalan-bandar-12-268-269-kuala-lumpur?to=place.w.66650144.666829121.22619741",
+  },
 } as const;
+
+/** Whether the shop is open now per its listed hours, evaluated in Malaysia time (UTC+8). */
+export function openStatus(now: Date = new Date()): { open: boolean; label: string; todayIdx: number } {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kuala_Lumpur",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  const todayIdx = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+  const minutes = Number(get("hour")) * 60 + Number(get("minute"));
+  const toMin = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3));
+  const fmt = (hhmm: string) => {
+    const h = Number(hhmm.slice(0, 2));
+    return `${h % 12 || 12}${h < 12 ? "am" : "pm"}`;
+  };
+  const today = STORE_FACTS.hours.find((h) => (h.dayIdx as readonly number[]).includes(todayIdx));
+  if (today && minutes >= toMin(today.open) && minutes < toMin(today.close))
+    return { open: true, label: `Open now · closes ${fmt(today.close)}`, todayIdx };
+  if (today && minutes < toMin(today.open)) return { open: false, label: `Closed · opens ${fmt(today.open)} today`, todayIdx };
+  const tomorrowIdx = (todayIdx + 1) % 7;
+  const tomorrow = STORE_FACTS.hours.find((h) => (h.dayIdx as readonly number[]).includes(tomorrowIdx));
+  return { open: false, label: tomorrow ? `Closed · opens ${fmt(tomorrow.open)} tomorrow` : "Closed", todayIdx };
+}
 
 export const DEMO_NOTICE = "Interactive concept website · Unofficial demonstration · No real orders or payments";
 
 export type FulfilmentMethod = "pickup" | "delivery";
-export type PaymentMethod = "demo-banking" | "demo-ewallet" | "demo-card";
+export type PaymentMethod = "demo-banking" | "demo-card";
 
 export const MY_STATES = [
   "Johor",
@@ -80,11 +124,10 @@ export const DEMO_CONFIG = {
   },
   pickup: {
     label: "Store pickup (demo)",
-    detail: "Collect at Taman Melawati. Pickup is simulated in this concept.",
+    detail: "Collect at Taman Melawati. Pickup is simulated in this demo.",
   },
   payments: [
     { id: "demo-banking", label: "Demo online banking", detail: "Simulates a bank redirect. No bank is contacted." },
-    { id: "demo-ewallet", label: "Demo e-wallet", detail: "Simulates a QR / wallet approval. No wallet is charged." },
     { id: "demo-card", label: "Demo card payment", detail: "Simulates a card authorisation. No card details are requested." },
   ] satisfies { id: PaymentMethod; label: string; detail: string }[],
   maxLineQuantity: 99,

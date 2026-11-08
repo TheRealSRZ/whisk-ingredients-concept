@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { useReveal } from "../anim/useReveal";
+import { useFrames } from "../anim/useFrames";
 import { CATEGORIES, hasPriceRange, lowestPrice, productsInCategory } from "../data/products";
 import { formatRM } from "../lib/money";
 import { href } from "../state/router";
@@ -9,6 +10,7 @@ import { ArtFrame } from "../components/ProductArt";
 export function Collections() {
   const root = useRef<HTMLDivElement>(null);
   useReveal(root);
+  useFrames(root);
   return (
     <div ref={root}>
       <div className="container page-head">
@@ -17,8 +19,8 @@ export function Collections() {
           Curated by stage of the bake.
         </h1>
         <p className="lede">
-          Five collections that follow a recipe from first weigh-out to final presentation. The category structure is a design proposal
-          for the concept; product lists are demonstration data.
+          Five collections that follow a recipe from first weigh-out to final presentation. Product lists and prices are demonstration
+          data.
         </p>
       </div>
       <div className="container">
@@ -27,8 +29,12 @@ export function Collections() {
           const featured = [...items].sort((a, b) => Number(b.featured) - Number(a.featured)).slice(0, 4);
           return (
             <article key={c.id} className="collection-row" aria-labelledby={`col-${c.id}`} data-testid={`collection-row-${c.id}`}>
-              <div className="collection-row__art" data-reveal>
-                <ArtFrame art={c.art} view={i % 2 === 0 ? 0 : 2} title={`Illustration for ${c.name}`} />
+              <div className="collection-row__art">
+                <div className={`frame ${i % 2 === 0 ? "frame--arch" : ""}`} data-frame={i % 2 === 0 ? "arch" : "round"}>
+                  <div className="frame__inner" data-frame-inner>
+                    <ArtFrame art={c.art} view={i % 2 === 0 ? 0 : 2} title={`Illustration for ${c.name}`} />
+                  </div>
+                </div>
               </div>
               <div data-reveal>
                 <span className="eyebrow">

@@ -305,7 +305,7 @@ export function Checkout() {
                 <legend id="field-fulfilment" tabIndex={-1}>
                   How would you like to receive this demo order?
                 </legend>
-                <Choice name="fulfilment" value="pickup" checked={draft.fulfilment === "pickup"} onChange={() => setDraft((d) => ({ ...d, fulfilment: "pickup" }))} title={DEMO_CONFIG.pickup.label} detail={`${DEMO_CONFIG.pickup.detail} ${STORE_FACTS.addressLines.join(", ")}.`} price="Free" testId="fulfil-pickup" />
+                <Choice name="fulfilment" value="pickup" checked={draft.fulfilment === "pickup"} onChange={() => setDraft((d) => ({ ...d, fulfilment: "pickup" }))} title={DEMO_CONFIG.pickup.label} detail={`${DEMO_CONFIG.pickup.detail} ${STORE_FACTS.addressShort}.`} price="Free" testId="fulfil-pickup" />
                 <Choice
                   name="fulfilment"
                   value="delivery"
@@ -377,7 +377,7 @@ export function Checkout() {
               </h2>
               <p className="muted small" style={{ marginBottom: 24, display: "flex", gap: 8, alignItems: "flex-start" }}>
                 <Lock size={16} aria-hidden="true" style={{ flex: "none", marginTop: 3 }} />
-                Choose how the demo should pretend to pay. This prototype never asks for card numbers, CVVs, banking passwords or wallet PINs.
+                Choose how the demo should pretend to pay. This demo never asks for card numbers, CVVs, banking passwords or wallet PINs.
               </p>
               <fieldset className="choice-list" aria-describedby={errors.payment ? "err-payment" : undefined}>
                 <legend id="field-payment" tabIndex={-1}>
@@ -423,7 +423,7 @@ export function Checkout() {
               <ReviewBlock title="Fulfilment" onEdit={() => goTo(2)}>
                 {draft.fulfilment === "pickup" ? (
                   <>
-                    Store pickup (demo) at {STORE_FACTS.addressLines.join(", ")}
+                    Store pickup (demo) at {STORE_FACTS.addressShort}
                   </>
                 ) : (
                   <>

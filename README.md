@@ -1,87 +1,167 @@
-# Whisk Ingredients · Digital Flagship Concept
+<div align="center">
 
-An **unofficial, interactive e-commerce prototype** showing how a premium online storefront could work for
-**Whisk Ingredients @ Taman Melawati** (Kuala Lumpur). It is a portfolio piece and pitch demo.
+# Whisk · Ingredients Concept
 
-> **Interactive concept website · Unofficial demonstration · No real orders or payments**
->
-> Not affiliated with, endorsed by or operated by the business. The catalogue, prices, stock levels, delivery
-> fees, promo code and payment methods are fictional demonstration data. Product imagery is original SVG
-> illustration, not photographs of real stock.
+**A premium, fully interactive e-commerce prototype for a baking-supply shop in Taman Melawati, Kuala Lumpur.**
 
-## What works
+Boutique fragrance-house presentation, applied to flour, couverture and cake boards.
 
-- Cinematic homepage: GSAP hero timeline, pointer depth parallax, pinned ScrollTrigger story ("Melt. Temper. Set.")
-- Catalogue: 26 demo products, 69 variants, 5 categories; search, category and price filters, 4 sort orders, clear-all, empty state
-- Product pages: 3-view illustrated gallery, multi-option variants (e.g. Palette × Size), live price and SKU, demo stock, quantity limits
-- Wishlist and cart (drawer) with merge-by-SKU, quantity steppers clamped to stock, remove, estimated delivery, `BAKE10` demo code
-- Four-step simulated checkout: details → pickup/delivery → demo payment → review → fictional `DEMO-XXXXXXXX` confirmation
-- Cart and wishlist persist in `localStorage` (validated on load); checkout details stay in memory only
+![React](https://img.shields.io/badge/React-18.3-20232A?logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white)
+![GSAP](https://img.shields.io/badge/GSAP-3.13-0AE448?logo=greensock&logoColor=black)
+![Tests](https://img.shields.io/badge/tests-32%20unit%20%C2%B7%2029%20e2e-2E7D32)
+![Status](https://img.shields.io/badge/status-concept%20%2F%20demo-A77953)
+
+</div>
+
+> [!IMPORTANT]
+> **Interactive concept website · Unofficial demonstration · No real orders or payments.**
+> This project is an independent design proposal. It is **not affiliated with, endorsed by or operated by**
+> Whisk Ingredients. All products, prices, stock, delivery fees, promo codes and payment methods are fictional
+> demonstration data. Product imagery is original SVG illustration, not photographs of real stock.
+
+---
+
+## Contents
+
+- [Highlights](#highlights)
+- [Quick start](#quick-start)
+- [Try the demo](#try-the-demo)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [How it works](#how-it-works)
+- [Testing](#testing)
+- [Accessibility](#accessibility)
+- [Security and privacy](#security-and-privacy)
+- [Roadmap to production](#roadmap-to-production)
+- [Credits and licences](#credits-and-licences)
+
+## Highlights
+
+| | |
+|---|---|
+| 🎬 **Cinematic homepage** | GSAP hero timeline, arched clip-path reveal, self-drawing line art, pointer depth parallax, a pinned ScrollTrigger story ("Melt. Temper. Set.") |
+| ✨ **Motion details** | GSAP Flip filtering, fly-to-cart, elastic cart badge, scroll-revealed editorial frames |
+| 🛍️ **Real catalogue behaviour** | 26 demo products, 69 variants, 5 collections, search, category and price filters, 4 sort orders |
+| 🎛️ **Multi-option variants** | e.g. Palette × Size, with live price, SKU and demo stock |
+| 🛒 **Working cart** | Drawer, merge by SKU, stock-clamped quantities, `BAKE10` demo code, delivery estimate |
+| 💳 **Simulated checkout** | Details → pickup/delivery → demo payment → review → `DEMO-XXXXXXXX` confirmation |
+| 🇲🇾 **Malaysian conventions** | RM formatting, +60 phone validation, 5-digit postcodes, 16 states and territories |
+| ♿ **Accessible** | Keyboard and screen-reader friendly, reduced-motion support, WCAG AA contrast |
 
 ## Quick start
 
+**Requirements:** Node.js 18+ and npm.
+
 ```bash
+git clone https://github.com/TheRealSRZ/whisk-ingredients-concept.git
+cd whisk-ingredients-concept
 npm install
-npm run dev            # http://localhost:5173
-npm run build          # production build in dist/
-npm run build:single   # one self-contained HTML file in dist-single/ (used for the hosted preview)
-npm test               # Vitest unit tests (cart maths, validation, catalogue)
-npm run test:e2e       # Playwright E2E against dist-single (needs Google Chrome; run build:single first)
+npm run dev
 ```
 
-Node 18+ (developed on Node 22). E2E uses the locally installed Chrome (`channel: "chrome"`); to use Playwright's
-bundled Chromium instead, run `npx playwright install chromium` and remove `channel` from `playwright.config.ts`.
+Open <http://localhost:5173>.
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server with hot reload |
+| `npm run build` | Type-check and build to `dist/` |
+| `npm run build:single` | Build one self-contained `index.html` to `dist-single/` |
+| `npm run preview` | Serve the production build locally |
+| `npm test` | Run the Vitest unit tests |
+| `npm run test:e2e` | Run the Playwright tests (run `npm run build:single` first; uses installed Chrome) |
+
+## Try the demo
+
+1. **Browse:** open a collection from the homepage, or search for `vanilla`, `couverture` or `spatula`.
+2. **Choose options:** open *Sprinkle Medley* and switch palette and size. Price and SKU update.
+3. **Hit a limit:** *Double-Acting Baking Powder 500 g* has 4 in demo stock. Try ordering 10.
+4. **Apply a code:** open the cart and enter `BAKE10` for 10% off merchandise.
+5. **Check out:** complete the four steps. Try an invalid postcode or phone number to see validation.
+
+> [!NOTE]
+> Demo delivery rules: store pickup free · Klang Valley RM 12 (free from RM 150 after discount) ·
+> Peninsular RM 18 · Sabah, Sarawak and Labuan RM 28. None of these are the shop's real terms.
+
+## Tech stack
+
+- **[React 18](https://react.dev) + [TypeScript](https://www.typescriptlang.org)** (strict mode)
+- **[Vite 5](https://vitejs.dev)**, with [`vite-plugin-singlefile`](https://github.com/richardtallent/vite-plugin-singlefile) for a portable one-file build
+- **[GSAP 3.13](https://gsap.com)** with ScrollTrigger and [`@gsap/react`](https://gsap.com/resources/React)
+- **[Lucide](https://lucide.dev)** icons
+- **Cormorant Garamond + Inter + Italianno**, self-hosted via Fontsource
+- **[Vitest](https://vitest.dev)** and **[Playwright](https://playwright.dev)** for testing
 
 ## Project structure
 
-```
+```text
 src/
-  anim/        gsap.ts (plugin registration, reduced-motion helpers), useReveal.ts (ScrollTrigger.batch reveals)
-  data/        types.ts, products.ts (demo catalogue + indexes), config.ts (verified store facts vs. demo config)
-  lib/         money.ts (integer sen, RM formatting), cart.ts (pure cart/promo/delivery/order logic),
-               validation.ts (Malaysian phone, postcode, email), catalogue.ts (search/filter/sort)
-  state/       store.tsx (single source of truth: cart, wishlist, toasts, announcements), router.ts (hash router)
-  components/  Header (nav, mobile menu, search), CartDrawer, Overlay (accessible animated dialog), ProductArt (SVG
-               packshots), HomeArt, ProductCard, QuantityStepper, PromoField, Footer, Toasts
-  pages/       Home, Shop, Product, Collections, Approach, Checkout, Confirmation, Misc (Wishlist, Policies, 404)
-  styles/      fonts.css (self-hosted Cormorant Garamond + Inter), global.css (tokens + components)
+├── anim/         GSAP registration, reduced-motion helpers, scroll reveals
+├── components/   Header, CartDrawer, Overlay (accessible dialog), ProductArt (SVG packshots), …
+├── data/         Demo catalogue, verified store facts vs. demo config, types
+├── lib/          Money (integer sen), cart, validation, catalogue search/filter/sort
+├── pages/        Home, Shop, Product, Collections, Visit, Checkout, Confirmation, …
+├── state/        Store (single source of truth) and hash router
+└── styles/       Design tokens and component styles
 tests/
-  unit/        logic.test.ts (29 tests)
-  e2e/         shop.spec.ts (25 tests: journeys A/B/C, failure cases, keyboard, motion, viewports, network)
-docs/          BUSINESS_EVIDENCE.md, DESIGN_SYSTEM.md, QA_REPORT.md
+├── unit/         Business logic tests
+└── e2e/          Browser journeys, failure cases, keyboard, motion, viewports
+docs/
+├── BUSINESS_EVIDENCE.md   What is verified, assumed or fictional
+├── DESIGN_SYSTEM.md       Colours, type, spacing, components, motion
+└── QA_REPORT.md           Tests run, bugs fixed, what remains untested
 ```
 
-## Architecture notes
+## How it works
 
-- **Money** is always integer sen. `formatRM()` is the only place decimals appear. Discounts round half-up to the sen.
-- **Cart rules** (`src/lib/cart.ts`): same SKU merges; different variants are separate lines; quantities clamp to
-  `min(stock, 99)`; removing the last line clears the promo; persisted data is re-validated with `sanitiseCart()`.
-- **Totals**: subtotal → `BAKE10` 10% off merchandise → delivery (pickup free; Klang Valley RM 12, free at RM 150
-  after discount; Peninsular RM 18; Sabah/Sarawak/Labuan RM 28; all demo values) → total, never negative.
-- **Routing** uses plain `#name` hashes because the hosted artifact frame only passes simple hashes through.
-- **GSAP**: registered once in `src/anim/gsap.ts`; every animation runs inside `useGSAP` with a scope so it is reverted
-  on unmount; `gsap.matchMedia()` gates motion on `prefers-reduced-motion` and viewport. Content is readable without
-  animation, and no control waits for a tween to finish. Scroll reveals use opacity (not visibility) so hidden links stay focusable.
-- **Accessibility**: skip link, one `h1` per view with focus moved to it on navigation, labelled dialogs with focus
-  trap / Escape / focus return, error summaries linked to fields, `aria-invalid` + `aria-describedby`, a polite live
-  region for cart updates, 44 px touch targets, visible focus rings, WCAG AA contrast on text tokens.
+- **Money is integer sen.** No floating-point arithmetic; `formatRM()` is the only place decimals appear.
+- **Pure cart logic** in `src/lib/cart.ts`: the same SKU merges, different variants stay separate, quantities clamp to demo stock, totals can never go negative.
+- **One store** (`src/state/store.tsx`) holds cart, wishlist and UI state. Cart and wishlist persist in `localStorage` and are re-validated on load. Checkout details stay in memory only.
+- **Hash routing** (`#shop`, `#product-<id>`, `#checkout`, …) keeps the build portable to static hosts and sandboxed previews.
+- **Motion is progressive.** Every animation runs inside `useGSAP` scopes with automatic cleanup. `gsap.matchMedia()` disables pinning and parallax for reduced motion and small screens, and no control waits on an animation.
 
-## Security and privacy (prototype scope)
+## Testing
 
-- No backend, no network calls, no API keys, no analytics, no external scripts (fonts are bundled).
-- No `dangerouslySetInnerHTML`, `innerHTML` or `eval`. All text renders through React.
-- The payment step never shows card, CVV, banking password or PIN fields.
-- `localStorage` holds only SKUs, quantities, the promo code and wishlisted product ids. No personal data is stored.
-- This is a **client-side simulation** and has not been security-audited. It is not a production e-commerce system.
+```bash
+npm test             # 29 unit tests
+npm run build:single
+npm run test:e2e     # 27 end-to-end tests in Chrome
+```
 
-## Before any real launch
+The end-to-end suite covers the three shopping journeys, invalid coupons and form data, an empty cart, stock limits, back-navigation and editing, refresh persistence, tampered storage, keyboard-only use, reduced motion, mobile checkout, five viewport widths, and a check that no external network requests are made. Full results are in [`docs/QA_REPORT.md`](docs/QA_REPORT.md).
 
-Owner permission and brand assets; real catalogue data (prices, stock, halal/allergen info); a licensed Malaysian
-payment provider with server-side confirmation via verified webhooks; server-side validation, order storage, staff
-tools and confirmation emails; rate limiting and abuse protection; PDPA-compliant privacy notice and real delivery,
-pickup and returns policies; HTTPS and security headers; accessibility and performance testing on real devices.
+## Accessibility
 
-## Licences
+Skip link · one `h1` per view, with focus moved on navigation · labelled dialogs with focus trap, Escape and focus return · error summaries linked to fields · `aria-invalid` and descriptive errors · live-region announcements for cart updates · 44 px touch targets · visible focus rings · AA contrast on all text tokens · `prefers-reduced-motion` support.
 
-GSAP 3.13 (GreenSock standard no-charge licence), @gsap/react (MIT), React (MIT), Lucide (ISC),
-Cormorant Garamond and Inter (SIL Open Font Licence via Fontsource). All illustrations are original to this concept.
+## Security and privacy
+
+- No backend, network calls, API keys, analytics or third-party scripts.
+- No `dangerouslySetInnerHTML`, `innerHTML` or `eval`.
+- The payment step never asks for card numbers, CVVs, banking passwords or PINs.
+- `localStorage` stores only SKUs, quantities, the promo code and wishlisted product ids.
+
+> [!WARNING]
+> This is a client-side simulation and has not been security-audited. It is not a production e-commerce system.
+
+## Roadmap to production
+
+- [ ] Owner permission, brand assets and product photography
+- [ ] Real catalogue, prices, stock, halal and allergen data
+- [ ] Licensed Malaysian payment gateway with server-side webhook confirmation
+- [ ] Server-side validation, order storage, staff tools and order emails
+- [ ] Rate limiting, abuse protection, security headers
+- [ ] PDPA privacy notice and real delivery, pickup and returns policies
+- [ ] Measured Lighthouse, Core Web Vitals and screen-reader audits on real devices
+
+## Credits and licences
+
+- Design, code and illustrations: original to this concept.
+- [GSAP](https://gsap.com/licensing/): GreenSock standard no-charge licence · [@gsap/react](https://github.com/greensock/react): MIT
+- [React](https://github.com/facebook/react): MIT · [Lucide](https://lucide.dev/license): ISC
+- [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) and [Inter](https://fonts.google.com/specimen/Inter): SIL Open Font Licence
+
+"Whisk Ingredients" is referenced only to identify the business this concept was made for. All rights in that name belong to its owner.
+
+<div align="center"><sub>Concept prototype · 2026 · Not a real shop · No real orders or payments</sub></div>

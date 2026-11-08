@@ -14,6 +14,7 @@ import {
   setQuantity,
 } from "../../src/lib/cart";
 import { queryCatalogue, DEFAULT_QUERY } from "../../src/lib/catalogue";
+import { openStatus, STORE_FACTS } from "../../src/data/config";
 import { formatRM, percentOf } from "../../src/lib/money";
 import {
   isValidMyPhone,
@@ -252,5 +253,23 @@ describe("catalogue query", () => {
   });
   it("every SKU in the index resolves", () => {
     expect(SKU_INDEX.size).toBe(PRODUCTS.reduce((n, p) => n + p.variants.length, 0));
+  });
+});
+
+describe("store location and hours (Malaysia time)", () => {
+  // UTC+8: 2026-11-09 is a Monday, 2026-11-08 a Sunday.
+  it("is open on a weekday afternoon and closed after 7pm", () => {
+    expect(openStatus(new Date("2026-11-09T07:00:00Z")).label).toBe("Open now · closes 7pm"); // Mon 3pm MYT
+    expect(openStatus(new Date("2026-11-09T11:30:00Z")).label).toBe("Closed · opens 9am tomorrow"); // Mon 7:30pm
+    expect(openStatus(new Date("2026-11-09T00:30:00Z")).label).toBe("Closed · opens 9am today"); // Mon 8:30am
+  });
+  it("uses Sunday's earlier close", () => {
+    expect(openStatus(new Date("2026-11-08T08:30:00Z")).open).toBe(true); // Sun 4:30pm
+    expect(openStatus(new Date("2026-11-08T09:30:00Z")).open).toBe(false); // Sun 5:30pm
+  });
+  it("builds official Google Maps URLs for the shop", () => {
+    expect(STORE_FACTS.maps.search.startsWith("https://www.google.com/maps/search/?api=1&query=")).toBe(true);
+    expect(decodeURIComponent(STORE_FACTS.maps.search)).toContain("Whisk Ingredients @ Taman Melawati, 268 Jalan Bandar 12");
+    expect(STORE_FACTS.maps.directions.startsWith("https://www.google.com/maps/dir/?api=1&destination=")).toBe(true);
   });
 });

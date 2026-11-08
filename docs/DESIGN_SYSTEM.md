@@ -25,6 +25,7 @@ Single theme by choice: one visual world, colours set explicitly, `color-scheme:
 ## Typography
 
 - Display: **Cormorant Garamond** 500/600 + italic, for headlines, product names, editorial accents.
+- Script accent: **Italianno**, only for the one-line tagline "Bake something beautiful." (hero and footer).
 - UI and body: **Inter** (variable), for navigation, labels, prices, forms. Prices use tabular numerals.
 - Scale: 12 / 14 / 16 / 18 / 24–32 / 32–52 / 42–80 / hero 44–86 px (fluid `clamp()`).
 - Eyebrows: 12 px, 600, 0.18em tracking, uppercase. Buttons: 13 px, 600, 0.12em tracking, uppercase.
@@ -33,7 +34,7 @@ Single theme by choice: one visual world, colours set explicitly, `color-scheme:
 ## Space, shape, layout
 
 - 8-pt scale: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 px. Side gutter `clamp(16px, 4vw, 56px)`; max width 1360 px.
-- Radius 2 px (crisp, editorial), pills only for tags and chips. Shadows only on lifted elements (drawer, packshot cards).
+- Radius 2 px for controls (crisp, editorial); 18 px for product media, 24 px for frames and cards; arches (999 px top) for hero and editorial imagery; pills for tags and chips. Shadows only on lifted elements (drawer, packshot cards).
 - Breakpoints: ≤420 (small phones), ≤560 (phones: 2-col grid), ≤900/960 (tablet: stacked layouts, menu button), desktop above.
 
 ## Components
@@ -59,7 +60,11 @@ product has three views: packshot, detail crop, styled still life. Always captio
 | Story | Pinned, scrubbed timeline: texture → temper (sheen sweep) → set (callets drop, headline) → product card → CTA, with progress bar | Narrative leading to a collection |
 | Reveals | `ScrollTrigger.batch` opacity/y on below-fold items only | Pacing |
 | Drawer / menu / search | Timeline enter/exit, staggered contents | Spatial continuity |
-| Feedback | Badge bump, button pop, price flash on variant change, gallery crossfade, filter re-stagger | Confirmation |
+| Line art | Whisk and wheat-sprig strokes draw on (`strokeDashoffset`) and drift on scroll | Craft, hand-made feel |
+| Frames | Arched / rounded `clip-path` reveals with an inner parallax layer (hero, intro, collections, product still life) | Editorial pacing |
+| Shop filters | GSAP Flip: cards glide to new positions on filter, search and sort | Spatial continuity |
+| Add to cart | Copper dot arcs to the header cart; badge springs (`elastic.out`) | Confirmation |
+| Feedback | Button pop, price flash on variant change, gallery crossfade, quick-add "+" rotates on hover | Confirmation |
 
 Rules: transform and opacity only; all tweens in `useGSAP` scopes (auto cleanup); `gsap.matchMedia()` removes pinning
 and parallax for reduced motion and below 900 px; durations collapse to 0 under reduced motion; no interaction
