@@ -26,3 +26,12 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+ui-debug.log*
+database-debug.log*
+firestore-debug.log*
+.runtimeconfig.json
